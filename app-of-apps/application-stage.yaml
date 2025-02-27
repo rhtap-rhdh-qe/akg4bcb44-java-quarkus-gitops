@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: akg4bcb44-java-quarkus-stage
+  namespace: rhtap-gitops
+  finalizers: ["resources-finalizer.argocd.argoproj.io"] 
+spec:
+  project: default
+  source:
+    path: ./components/akg4bcb44-java-quarkus/overlays/stage
+    repoURL: https://github.com/rhtap-rhdh-qe/akg4bcb44-java-quarkus-gitops.git
+    targetRevision: main
+  destination:
+    namespace: rhtap-app-stage
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    managedNamespaceMetadata:
+      labels: 
+        argocd.argoproj.io/managed-by: rhtap-gitops
+    automated: 
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
+
